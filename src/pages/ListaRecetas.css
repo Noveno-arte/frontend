@@ -1,0 +1,36 @@
+.main-page {
+    display: grid;
+    grid-template-columns: 60%;
+    justify-content: center;
+    background-color: #f4f4f9;
+    padding-bottom: 50px;
+
+}
+
+.recetas-container {
+    background-color: white;
+    min-height: 80vh;
+}
+
+.header {
+    margin: 10px 0;
+    background-color: white;
+    display: flex; 
+    align-items: center; 
+    gap: 3rem;  
+}
+
+.header img{
+    padding: 10px;
+    height: 100px;
+}
+.header .header-titulo{
+    font-size: 3rem;
+    font-weight: 900;
+    color: #782701;
+}
+
+.lista-container{    
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
