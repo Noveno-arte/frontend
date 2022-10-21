@@ -3,7 +3,7 @@ import "./CartaReceta.css";
 import Boton from './Boton'
 import {Link} from 'react-router-dom';
 
-function CartaReceta({data}) {
+function CartaReceta({data,index}) {
     return (
         <div className='receta-wrapper'>
             <img src={data.imagen} alt='' />
@@ -13,8 +13,8 @@ function CartaReceta({data}) {
                 </div>
                 <hr/>
                 <div className="accion" >
-                    <Link to={'/receta/'+data.titulo} style={{ textDecoration: 'none' }}>
-                    <Boton />
+                    <Link to={'/receta/'+index} style={{ textDecoration: 'none' }}>
+                    <Boton titulo="Ver receta"/>
                     </Link>
                 </div>
             </div>

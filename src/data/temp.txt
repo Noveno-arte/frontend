@@ -1,0 +1,24 @@
+// Te envio un medio y recibo esto
+{
+    "sesgoIquierdaDerecha":{
+        "0":{
+            "izquierda":0.25,
+            "centro":0.40,
+            "derecha":0.35
+        },
+        "1":{
+            "izquierda":0.25,
+            "centro":0.40,
+            "derecha":0.35
+        },
+        ... //maximo 30 dias, si no existen tantos registros hasta donde se pueda
+    },
+    "SesgoProgresista":{
+        "0":{
+            ...
+        }
+        ...
+    }
+    ... //Lo mismo para todos los sesgos
+
+}

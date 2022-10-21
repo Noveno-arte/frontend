@@ -34,3 +34,11 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 }
+
+.opciones{
+    display: flex;
+    justify-content: center;
+    gap:20%;
+    margin:40px 0;
+
+}

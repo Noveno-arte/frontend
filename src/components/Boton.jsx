@@ -1,9 +1,9 @@
 import React from 'react';
 import "./Boton.css";
 
-function Boton() {
+function Boton({titulo}) {
     return (
-        <button class="button-53" >Ver receta</button>
+        <button class="button-53" >{titulo}</button>
     );
 }
 

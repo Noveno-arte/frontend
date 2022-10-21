@@ -1,14 +1,17 @@
-import React from 'react';
+import React,{useContext } from 'react';
 import "./ListaRecetas.css";
-import recetas from '../data/recetas.json'
 import logo from '../images/recipe-logo.png'
 import CartaReceta from '../components/CartaReceta'
+import { UserContext } from '../components/UserContext';
 
 //https://www.recetasgratis.net/
 function ListaRecetas(props) {
+
+    const {recetas,} = useContext(UserContext);  
+
     return (
         
-        <div className='main-page'>            
+        <div className='main-page'>        
             <div className="header">
                 <img src={logo} alt=''/>
                 <div className="header-titulo">
@@ -20,8 +23,8 @@ function ListaRecetas(props) {
 
                 </div>
                 <div className="lista-container">
-                    {recetas.map((receta)=>(
-                        <CartaReceta data = {receta}/>
+                    {recetas.map((receta,i)=>(
+                        <CartaReceta data = {receta} index={i}/>
                     ))}
                 </div>
             </div>
