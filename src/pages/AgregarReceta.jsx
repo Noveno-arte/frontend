@@ -3,22 +3,19 @@ import "./EditarReceta.css";
 import { AiOutlineArrowLeft,AiOutlineDelete, AiOutlineCloudDownload } from 'react-icons/ai';
 import { IoIosAddCircleOutline} from 'react-icons/io';
 import {Link} from 'react-router-dom';
-import { useParams } from 'react-router-dom';
 import Boton from '../components/Boton';
 
 //https://www.recetasgratis.net/
-function EditarReceta() {    
-    const { id } = useParams();
-    const RECETA = JSON.parse(localStorage.getItem('recetas-ls'))[Number(id)];
+function AgregarReceta() {    
 
-    const [titulo, setTitulo] = useState(RECETA.titulo);   
-    const [imagen, setImagen] = useState(RECETA.imagen);   
-    const [url, setUrl] = useState(RECETA.imagen);    
+    const [titulo, setTitulo] = useState('');   
+    const [imagen, setImagen] = useState('');   
+    const [url, setUrl] = useState('');    
 
-    const [ingredientes, setIngredientes] = useState(RECETA.ingredientes);
+    const [ingredientes, setIngredientes] = useState([]);
     const [ingrediente, setIngrediente] = useState('');
 
-    const [preparaciones, setPreparaciones] = useState(RECETA.preparacion);
+    const [preparaciones, setPreparaciones] = useState([]);
     const [preparacion, setPreparacion] = useState('');    
 
     const handleDeleteIngredientes = (index) => setIngredientes(ingredientes.filter(item => item !== ingredientes[index]));
@@ -34,20 +31,16 @@ function EditarReceta() {
     const onChangeHandlerTitulo= event => setTitulo(event.target.value);
 
     const handleGuardar = () => {
-        const temp = Object.assign([], JSON.parse(localStorage.getItem('recetas-ls')));
-        temp[Number(id)].titulo = titulo;
-        temp[Number(id)].imagen = imagen;
-        temp[Number(id)].ingredientes = ingredientes;
-        temp[Number(id)].preparacion = preparaciones;
-        localStorage.setItem('recetas-ls', JSON.stringify(temp));
-        console.log(JSON.parse(localStorage.getItem('recetas-ls')));
-        window.location.href = '/receta/'+id;
+        const newElement = {titulo:titulo,imagen:imagen,ingredientes:ingredientes,preparacion:preparaciones};
+        const newArray = [newElement].concat(JSON.parse(localStorage.getItem('recetas-ls')));
+        localStorage.setItem('recetas-ls', JSON.stringify(newArray));
+        window.location.href = '/';
     };
 
     return (        
         <div className='main-page'>            
             <div className="return-wrapper">
-                <Link to={'/receta/'+id} style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem'}} >
+                <Link to='/' style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem'}} >
                     <AiOutlineArrowLeft size={30}/>                
                     <div className="header-return" >
                         Volver
@@ -113,7 +106,7 @@ function EditarReceta() {
                     <span  onClick={handleGuardar}>
                         <Boton titulo='Guardar'/>
                     </span>
-                    <Link to={'/receta/'+id} style={{textDecoration:'none'}}>
+                    <Link to='/' style={{textDecoration:'none'}}>
                         <Boton titulo='Cancelar'/>
                     </Link>
                 </div>
@@ -122,4 +115,4 @@ function EditarReceta() {
     );
 }
 
-export default EditarReceta;
+export default AgregarReceta;

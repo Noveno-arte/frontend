@@ -1,21 +1,29 @@
-import React,{useContext }  from 'react';
+import React from 'react';
 import "./DetallesReceta.css";
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import {Link} from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import Lista from '../components/Lista';
 import Boton from '../components/Boton';
-import { UserContext } from '../components/UserContext';
+import ScrollToTop from '../components/ScrollToTop';
 
 //https://www.recetasgratis.net/
 function DetallesReceta() {    
-    const { id } = useParams();
-    const {recetas,} = useContext(UserContext);  
-    const RECETA =  recetas[Number(id)];   
+    const { id } = useParams();  
+    const RECETA = JSON.parse(localStorage.getItem('recetas-ls'))[Number(id)];
 
-    return (        
+    const handleEliminar = () =>{
+        const newArray = Object.assign([], JSON.parse(localStorage.getItem('recetas-ls')));
+        newArray.splice(Number(id), 1);
+        localStorage.setItem('recetas-ls', JSON.stringify(newArray));
+        window.location.href = '/';
+    };
+
+    return (      
+        <>
+        <ScrollToTop />  
         <div className='main-page'>       
-            <div className="header">
+            <div className="return-wrapper">
                 <Link to='/' style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem'}} >
                     <AiOutlineArrowLeft size={30}/>                
                     <div className="header-return" >
@@ -34,7 +42,9 @@ function DetallesReceta() {
                             <Link to={'/editar/'+id} style={{ textDecoration: 'none' }}>
                             <Boton titulo='Editar'/>         
                             </Link>
-                            <Boton titulo='Eliminar'/>                     
+                            <div onClick={handleEliminar} >
+                                <Boton titulo='Eliminar'/>   
+                            </div>                  
                         </div>
 
                     </div> 
@@ -51,9 +61,9 @@ function DetallesReceta() {
                 <div className="sublista-container" tipo ='ol'>
                     <Lista datos={RECETA.preparacion}/>
                 </div>
-            </div>
-            
+            </div>            
         </div>
+        </>
     );
 }
 

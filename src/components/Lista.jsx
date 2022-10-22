@@ -6,16 +6,16 @@ function Lista({datos,tipo}) {
         <>
         {tipo === 'ul' ?        
             <ul className='lista-wrapper'>
-                {datos.map((dato)=>(
-                    <li>
+                {datos.map((dato,i)=>(
+                    <li  key={i}>
                         {dato}
                     </li>
                 ))}
             </ul>
         :
         <ol className='lista-wrapper'>
-            {datos.map((dato)=>(
-                <li>
+            {datos.map((dato,i)=>(
+                <li key={i}>
                     {dato}
                 </li>
             ))}
