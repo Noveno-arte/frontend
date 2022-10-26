@@ -1,9 +1,18 @@
-import React from 'react';
+import React, {useContext } from 'react';
+import {UserContext} from "./UserContext"
 import "./CartaReceta.css";
 import Boton from './Boton'
-import {Link} from 'react-router-dom';
 
 function CartaReceta({data,index}) {
+
+    const {setPath} = useContext(UserContext); 
+    const {setIndice} = useContext(UserContext); 
+
+    const handleClick =(index)=>{
+        setPath(1);
+        setIndice(index);
+    }
+
     return (
         <div className='receta-wrapper'>
             <img src={data.imagen} alt='' />
@@ -13,9 +22,9 @@ function CartaReceta({data,index}) {
                 </div>
                 <hr/>
                 <div className="accion" >
-                    <Link to={'/receta/'+index} style={{ textDecoration: 'none' }}>
+                    <span className={'link-to-'+index+'-btn'} onClick={()=>{handleClick(index)}} style={{ textDecoration: 'none' }}>
                     <Boton titulo="Ver receta"/>
-                    </Link>
+                    </span>
                 </div>
             </div>
 

@@ -10,7 +10,7 @@ import LoadFiles from './components/LoadFiles';
 ReactDOM.render(
   <React.StrictMode>
     <LoadFiles />
-    <App/>
+    <App recetas={JSON.parse(localStorage.getItem('recetas-ls'))}/>
   </React.StrictMode>,
   document.getElementById('root')
 );

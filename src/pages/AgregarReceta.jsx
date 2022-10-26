@@ -1,12 +1,15 @@
-import React,{useState} from 'react';
+import React, { useState, useContext } from 'react';
+import {UserContext} from "../components/UserContext";
 import "./EditarReceta.css";
 import { AiOutlineArrowLeft,AiOutlineDelete, AiOutlineCloudDownload } from 'react-icons/ai';
 import { IoIosAddCircleOutline} from 'react-icons/io';
-import {Link} from 'react-router-dom';
 import Boton from '../components/Boton';
 
 //https://www.recetasgratis.net/
 function AgregarReceta() {    
+
+    const {recetas,setRecetas} = useContext(UserContext); 
+    const {setPath} = useContext(UserContext); 
 
     const [titulo, setTitulo] = useState('');   
     const [imagen, setImagen] = useState('');   
@@ -32,20 +35,21 @@ function AgregarReceta() {
 
     const handleGuardar = () => {
         const newElement = {titulo:titulo,imagen:imagen,ingredientes:ingredientes,preparacion:preparaciones};
-        const newArray = [newElement].concat(JSON.parse(localStorage.getItem('recetas-ls')));
-        localStorage.setItem('recetas-ls', JSON.stringify(newArray));
-        window.location.href = '/';
+        const actualRecetas = Object.assign([], recetas);
+        const newArray = [newElement].concat(actualRecetas);
+        setRecetas(newArray);
+        setPath(0);
     };
 
     return (        
         <div className='main-page'>            
             <div className="return-wrapper">
-                <Link to='/' style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem'}} >
+                <span style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem', cursor:'pointer'}} onClick={()=>{setPath(0)}}>
                     <AiOutlineArrowLeft size={30}/>                
                     <div className="header-return" >
                         Volver
                     </div>
-                </Link>
+                </span>
             </div>
             <div className="recetas-container">
                 <div className="edit-titulo">                                                 
@@ -53,7 +57,7 @@ function AgregarReceta() {
                         Titulo
                     </div>  
                     <div className="input-wrapper" style={{width:'100%'}}>
-                        <input className="input-text" style={{width:'80%'}} type="text" onChange={onChangeHandlerTitulo} value={titulo} placeholder='Nombre de la receta'/>
+                        <input id='input-titulo' className="input-text" style={{width:'80%'}} type="text" onChange={onChangeHandlerTitulo} value={titulo} placeholder='Nombre de la receta'/>
                     </div>                     
                 </div>
                 <div className="edicion-imagen">                                   
@@ -63,8 +67,10 @@ function AgregarReceta() {
                     <img src={imagen} alt=''/> 
                     <div className="edicion">                        
                         <div className="input-wrapper" style={{width:'100%'}}>
-                            <input className="input-text" type="text" placeholder='URL de la imagen' style={{width:'70%'}} onChange={onChangeHandlerUrl} value={url}/>
-                            <AiOutlineCloudDownload style={{cursor:'pointer'}} onClick={handleAddingImagen} size={40} />
+                            <input id='input-url' className="input-text" type="text" placeholder='URL de la imagen' style={{width:'70%'}} onChange={onChangeHandlerUrl} value={url}/>
+                            <span  id='cargar-url' onClick={handleAddingImagen} >
+                                <AiOutlineCloudDownload style={{cursor:'pointer'}} size={40} />
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -75,14 +81,18 @@ function AgregarReceta() {
                     <ul>
                     {ingredientes.map((ingrediente,i)=>(
                         <div key={i} style={{display:'grid',gridTemplateColumns:'4fr 1fr', alignItems:'center',gap:'10px'}}>
-                            <li style={{margin:'10px 0'}}>{ingrediente}</li>
-                            <AiOutlineDelete style={{cursor:'pointer'}} onClick={() => handleDeleteIngredientes(i)} size={20}/>
+                            <li id={'ing-'+i} style={{margin:'10px 0'}}>{ingrediente}</li>
+                            <span id={'eliminar-ingrediente-'+i} onClick={() => handleDeleteIngredientes(i)}  >
+                                <AiOutlineDelete style={{cursor:'pointer'}} size={20}/>
+                            </span>
                         </div>
                     ))}                        
                     </ul>
                     <div className="input-wrapper" style={{width:'100%'}}>
-                        <input className="input-text" type="text" placeholder='Añadir ingrediente' style={{width:'70%'}} onChange={onChangeHandlerIngredientes} value={ingrediente}/>
-                        <IoIosAddCircleOutline style={{cursor:'pointer'}} onClick={handleAddingIngredientes} size={40} />
+                        <input id='input-ingrediente' className="input-text" type="text" placeholder='Añadir ingrediente' style={{width:'70%'}} onChange={onChangeHandlerIngredientes} value={ingrediente}/>
+                        <span id='cargar-ingrediente' onClick={handleAddingIngredientes} >
+                            <IoIosAddCircleOutline style={{cursor:'pointer'}} size={40} />
+                        </span>
                     </div>
                 </div>  
                 <div className="edit-preparacion">        
@@ -92,23 +102,27 @@ function AgregarReceta() {
                     <ol>
                     {preparaciones.map((preparacion,i)=>(
                         <div key={i} style={{display:'grid',gridTemplateColumns:'4fr 1fr', alignItems:'center',gap:'10px'}}>
-                            <li style={{margin:'10px 0'}}>{preparacion}</li>
-                            <AiOutlineDelete style={{cursor:'pointer'}} onClick={() => handleDeletePreparaciones(i)} size={20}/>
+                            <li id={'prep-'+i} style={{margin:'10px 0'}}>{preparacion}</li>
+                            <span id={'eliminar-preparacion-'+i} onClick={() => handleDeletePreparaciones(i)} >
+                                <AiOutlineDelete style={{cursor:'pointer'}} size={20}/>
+                            </span>
                         </div>
                     ))}                        
                     </ol>
                     <div className="input-wrapper" style={{width:'100%'}} >
-                        <input className="input-text" type="text" placeholder='Añadir paso' style={{width:'70%'}} onChange={onChangeHandlerPreparaciones} value={preparacion}/>
-                        <IoIosAddCircleOutline style={{cursor:'pointer'}} onClick={handleAddingPreparaciones} size={40} />
+                        <input id='input-preparacion' className="input-text" type="text" placeholder='Añadir paso' style={{width:'70%'}} onChange={onChangeHandlerPreparaciones} value={preparacion}/>
+                        <span id='cargar-preparacion' onClick={handleAddingPreparaciones} >
+                            <IoIosAddCircleOutline style={{cursor:'pointer'}} size={40} />
+                        </span>
                     </div>     
                 </div> 
                 <div className="opciones">
-                    <span  onClick={handleGuardar}>
+                    <span id='guardar-receta' onClick={handleGuardar}>
                         <Boton titulo='Guardar'/>
                     </span>
-                    <Link to='/' style={{textDecoration:'none'}}>
+                    <span style={{textDecoration:'none'}} onClick={()=>{setPath(0)}}>
                         <Boton titulo='Cancelar'/>
-                    </Link>
+                    </span>
                 </div>
             </div>
         </div>

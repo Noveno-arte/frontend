@@ -1,15 +1,18 @@
-import React,{useState} from 'react';
+import React, { useState, useContext } from 'react';
+import {UserContext} from "../components/UserContext";
 import "./EditarReceta.css";
 import { AiOutlineArrowLeft,AiOutlineDelete, AiOutlineCloudDownload } from 'react-icons/ai';
 import { IoIosAddCircleOutline} from 'react-icons/io';
-import {Link} from 'react-router-dom';
-import { useParams } from 'react-router-dom';
 import Boton from '../components/Boton';
 
 //https://www.recetasgratis.net/
 function EditarReceta() {    
-    const { id } = useParams();
-    const RECETA = JSON.parse(localStorage.getItem('recetas-ls'))[Number(id)];
+
+    const {recetas,setRecetas} = useContext(UserContext); 
+    const {setPath} = useContext(UserContext); 
+    const {indice} = useContext(UserContext); 
+
+    const RECETA = recetas[indice];
 
     const [titulo, setTitulo] = useState(RECETA.titulo);   
     const [imagen, setImagen] = useState(RECETA.imagen);   
@@ -34,25 +37,24 @@ function EditarReceta() {
     const onChangeHandlerTitulo= event => setTitulo(event.target.value);
 
     const handleGuardar = () => {
-        const temp = Object.assign([], JSON.parse(localStorage.getItem('recetas-ls')));
-        temp[Number(id)].titulo = titulo;
-        temp[Number(id)].imagen = imagen;
-        temp[Number(id)].ingredientes = ingredientes;
-        temp[Number(id)].preparacion = preparaciones;
-        localStorage.setItem('recetas-ls', JSON.stringify(temp));
-        console.log(JSON.parse(localStorage.getItem('recetas-ls')));
-        window.location.href = '/receta/'+id;
+        const temp = Object.assign([], recetas);
+        temp[indice].titulo = titulo;
+        temp[indice].imagen = imagen;
+        temp[indice].ingredientes = ingredientes;
+        temp[indice].preparacion = preparaciones;
+        setRecetas(temp);
+        setPath(1);
     };
 
     return (        
         <div className='main-page'>            
             <div className="return-wrapper">
-                <Link to={'/receta/'+id} style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem'}} >
+                <span style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem',cursor:'pointer'}} onClick={()=>{setPath(1)}} >
                     <AiOutlineArrowLeft size={30}/>                
                     <div className="header-return" >
                         Volver
                     </div>
-                </Link>
+                </span>
             </div>
             <div className="recetas-container">
                 <div className="edit-titulo">                                                 
@@ -60,7 +62,7 @@ function EditarReceta() {
                         Titulo
                     </div>  
                     <div className="input-wrapper" style={{width:'100%'}}>
-                        <input className="input-text" style={{width:'80%'}} type="text" onChange={onChangeHandlerTitulo} value={titulo} placeholder='Nombre de la receta'/>
+                        <input id='input-titulo' className="input-text" style={{width:'80%'}} type="text" onChange={onChangeHandlerTitulo} value={titulo} placeholder='Nombre de la receta'/>
                     </div>                     
                 </div>
                 <div className="edicion-imagen">                                   
@@ -71,7 +73,9 @@ function EditarReceta() {
                     <div className="edicion">                        
                         <div className="input-wrapper" style={{width:'100%'}}>
                             <input className="input-text" type="text" placeholder='URL de la imagen' style={{width:'70%'}} onChange={onChangeHandlerUrl} value={url}/>
-                            <AiOutlineCloudDownload style={{cursor:'pointer'}} onClick={handleAddingImagen} size={40} />
+                            <span  id='cargar-url' onClick={handleAddingImagen} >
+                                <AiOutlineCloudDownload style={{cursor:'pointer'}} size={40} />
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -82,14 +86,18 @@ function EditarReceta() {
                     <ul>
                     {ingredientes.map((ingrediente,i)=>(
                         <div key={i} style={{display:'grid',gridTemplateColumns:'4fr 1fr', alignItems:'center',gap:'10px'}}>
-                            <li style={{margin:'10px 0'}}>{ingrediente}</li>
-                            <AiOutlineDelete style={{cursor:'pointer'}} onClick={() => handleDeleteIngredientes(i)} size={20}/>
+                            <li id={'ing-'+i} style={{margin:'10px 0'}}>{ingrediente}</li>
+                            <span id={'eliminar-ingrediente-'+i} onClick={() => handleDeleteIngredientes(i)}  >
+                                <AiOutlineDelete style={{cursor:'pointer'}} size={20}/>
+                            </span>
                         </div>
                     ))}                        
                     </ul>
                     <div className="input-wrapper" style={{width:'100%'}}>
-                        <input className="input-text" type="text" placeholder='Añadir ingrediente' style={{width:'70%'}} onChange={onChangeHandlerIngredientes} value={ingrediente}/>
-                        <IoIosAddCircleOutline style={{cursor:'pointer'}} onClick={handleAddingIngredientes} size={40} />
+                        <input id='input-ingrediente' className="input-text" type="text" placeholder='Añadir ingrediente' style={{width:'70%'}} onChange={onChangeHandlerIngredientes} value={ingrediente}/>
+                        <span id='cargar-ingrediente' onClick={handleAddingIngredientes} >
+                            <IoIosAddCircleOutline style={{cursor:'pointer'}} size={40} />
+                        </span>
                     </div>
                 </div>  
                 <div className="edit-preparacion">        
@@ -99,23 +107,27 @@ function EditarReceta() {
                     <ol>
                     {preparaciones.map((preparacion,i)=>(
                         <div key={i} style={{display:'grid',gridTemplateColumns:'4fr 1fr', alignItems:'center',gap:'10px'}}>
-                            <li style={{margin:'10px 0'}}>{preparacion}</li>
-                            <AiOutlineDelete style={{cursor:'pointer'}} onClick={() => handleDeletePreparaciones(i)} size={20}/>
+                            <li id={'prep-'+i} style={{margin:'10px 0'}}>{preparacion}</li>
+                            <span id={'eliminar-preparacion-'+i} onClick={() => handleDeletePreparaciones(i)} >
+                                <AiOutlineDelete style={{cursor:'pointer'}} size={20}/>
+                            </span>
                         </div>
                     ))}                        
                     </ol>
                     <div className="input-wrapper" style={{width:'100%'}} >
-                        <input className="input-text" type="text" placeholder='Añadir paso' style={{width:'70%'}} onChange={onChangeHandlerPreparaciones} value={preparacion}/>
-                        <IoIosAddCircleOutline style={{cursor:'pointer'}} onClick={handleAddingPreparaciones} size={40} />
+                        <input id='input-preparacion' className="input-text" type="text" placeholder='Añadir paso' style={{width:'70%'}} onChange={onChangeHandlerPreparaciones} value={preparacion}/>
+                        <span id='cargar-preparacion' onClick={handleAddingPreparaciones} >
+                            <IoIosAddCircleOutline style={{cursor:'pointer'}} size={40} />
+                        </span>
                     </div>     
                 </div> 
                 <div className="opciones">
-                    <span  onClick={handleGuardar}>
+                    <span id='guardar-receta' onClick={handleGuardar}>
                         <Boton titulo='Guardar'/>
                     </span>
-                    <Link to={'/receta/'+id} style={{textDecoration:'none'}}>
+                    <span style={{textDecoration:'none'}} onClick={()=>{setPath(1)}}>
                         <Boton titulo='Cancelar'/>
-                    </Link>
+                    </span>
                 </div>
             </div>
         </div>
