@@ -11,7 +11,8 @@ function AgregarReceta() {
     const {recetas,setRecetas} = useContext(UserContext); 
     const {setPath} = useContext(UserContext); 
      
-    const [error, setError] = useState(false);    
+    const [error, setError] = useState(false); 
+    const [mlerror, setMlerror] = useState(false);    
 
     const [titulo, setTitulo] = useState('');   
     const [imagen, setImagen] = useState('');   
@@ -37,15 +38,18 @@ function AgregarReceta() {
 
     const handleGuardar = () => {
 
-        if (ingredientes.length !== 0 && preparaciones.length !== 0 && titulo !== ''){
+        if (ingredientes.length === 0 || preparaciones.length === 0 || titulo === ''){
+            setError(true);
+        }else if (titulo.length > 80 ){
+            setMlerror(true);
+        }else{
             const newElement = {titulo:titulo,imagen:imagen,ingredientes:ingredientes,preparacion:preparaciones};
             const actualRecetas = Object.assign([], recetas);
             const newArray = [newElement].concat(actualRecetas);
             setRecetas(newArray);
             setError(false);
+            setMlerror(false);
             setPath(0);
-        }else{
-            setError(true);
         }
 
 
@@ -67,9 +71,14 @@ function AgregarReceta() {
                         Titulo
                     </div>  
                     <div className="input-wrapper" style={{width:'100%'}}>
-                        <input id='input-titulo' className="input-text" style={{width:'80%'}} type="text" onChange={onChangeHandlerTitulo} value={titulo} placeholder='Nombre de la receta'/>
+                        <input id='input-titulo' maxlength="90" className="input-text" style={{width:'80%'}} type="text" onChange={onChangeHandlerTitulo} value={titulo} placeholder='Nombre de la receta'/>
                     </div>                     
+                </div>                 
+                {mlerror && (
+                <div className="warning-length" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                    ¡El titulo no puede exceder los 80 caracteres!
                 </div>
+                )}
                 <div className="edicion-imagen">                                   
                     <div className="subtitulo">
                         Imagen
@@ -127,8 +136,8 @@ function AgregarReceta() {
                     </div>     
                 </div> 
                 {error && (
-                <div className="warning" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
-                    Existen campos sin rellenar
+                <div className="warning-empty" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                    ¡Existen campos sin rellenar!
                 </div>
                 )}
                 <div className="opciones">

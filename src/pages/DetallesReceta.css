@@ -30,6 +30,8 @@
     font-size: 2rem;
     font-weight: 900;
     color: #782701be;
+    max-width: 95%;
+    overflow-wrap: break-word; 
 }
 .subtitulo{
     font-size: 1.5rem;
