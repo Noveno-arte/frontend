@@ -14,6 +14,8 @@ function EditarReceta() {
 
     const RECETA = recetas[indice];
 
+    const [error, setError] = useState(false);  
+
     const [titulo, setTitulo] = useState(RECETA.titulo);   
     const [imagen, setImagen] = useState(RECETA.imagen);   
     const [url, setUrl] = useState(RECETA.imagen);    
@@ -37,13 +39,18 @@ function EditarReceta() {
     const onChangeHandlerTitulo= event => setTitulo(event.target.value);
 
     const handleGuardar = () => {
-        const temp = Object.assign([], recetas);
-        temp[indice].titulo = titulo;
-        temp[indice].imagen = imagen;
-        temp[indice].ingredientes = ingredientes;
-        temp[indice].preparacion = preparaciones;
-        setRecetas(temp);
-        setPath(1);
+        if (ingredientes.length !== 0 && preparaciones.length !== 0 && titulo !== ''){
+            const temp = Object.assign([], recetas);
+            temp[indice].titulo = titulo;
+            temp[indice].imagen = imagen;
+            temp[indice].ingredientes = ingredientes;
+            temp[indice].preparacion = preparaciones;
+            setRecetas(temp);
+            setError(false);
+            setPath(1);
+        }else{
+            setError(true);
+        }
     };
 
     return (        
@@ -121,6 +128,11 @@ function EditarReceta() {
                         </span>
                     </div>     
                 </div> 
+                {error && (
+                <div className="warning" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                    Existen campos sin rellenar
+                </div>
+                )}
                 <div className="opciones">
                     <span id='guardar-receta' onClick={handleGuardar}>
                         <Boton titulo='Guardar'/>

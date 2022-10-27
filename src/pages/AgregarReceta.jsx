@@ -10,6 +10,8 @@ function AgregarReceta() {
 
     const {recetas,setRecetas} = useContext(UserContext); 
     const {setPath} = useContext(UserContext); 
+     
+    const [error, setError] = useState(false);    
 
     const [titulo, setTitulo] = useState('');   
     const [imagen, setImagen] = useState('');   
@@ -34,11 +36,19 @@ function AgregarReceta() {
     const onChangeHandlerTitulo= event => setTitulo(event.target.value);
 
     const handleGuardar = () => {
-        const newElement = {titulo:titulo,imagen:imagen,ingredientes:ingredientes,preparacion:preparaciones};
-        const actualRecetas = Object.assign([], recetas);
-        const newArray = [newElement].concat(actualRecetas);
-        setRecetas(newArray);
-        setPath(0);
+
+        if (ingredientes.length !== 0 && preparaciones.length !== 0 && titulo !== ''){
+            const newElement = {titulo:titulo,imagen:imagen,ingredientes:ingredientes,preparacion:preparaciones};
+            const actualRecetas = Object.assign([], recetas);
+            const newArray = [newElement].concat(actualRecetas);
+            setRecetas(newArray);
+            setError(false);
+            setPath(0);
+        }else{
+            setError(true);
+        }
+
+
     };
 
     return (        
@@ -116,6 +126,11 @@ function AgregarReceta() {
                         </span>
                     </div>     
                 </div> 
+                {error && (
+                <div className="warning" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                    Existen campos sin rellenar
+                </div>
+                )}
                 <div className="opciones">
                     <span id='guardar-receta' onClick={handleGuardar}>
                         <Boton titulo='Guardar'/>
