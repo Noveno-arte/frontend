@@ -71,7 +71,7 @@ function AgregarReceta() {
                         Titulo
                     </div>  
                     <div className="input-wrapper" style={{width:'100%'}}>
-                        <input id='input-titulo' maxlength="90" className="input-text" style={{width:'80%'}} type="text" onChange={onChangeHandlerTitulo} value={titulo} placeholder='Nombre de la receta'/>
+                        <input id='input-titulo' className="input-text" style={{width:'80%'}} type="text" onChange={onChangeHandlerTitulo} value={titulo} placeholder='Nombre de la receta'/>
                     </div>                     
                 </div>                 
                 {mlerror && (

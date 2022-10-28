@@ -78,7 +78,7 @@ function EditarReceta() {
                     </div>                     
                 </div>                
                 {mlerror && (
-                <div className="warning-length"  maxlength="90" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                <div className="warning-length" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
                     ¡El titulo no puede exceder los 80 caracteres!
                 </div>
                 )}

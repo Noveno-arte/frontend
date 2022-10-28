@@ -3,14 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import LoadFiles from './components/LoadFiles';
 
 
 
 ReactDOM.render(
   <React.StrictMode>
-    <LoadFiles />
-    <App recetas={JSON.parse(localStorage.getItem('recetas-ls'))}/>
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

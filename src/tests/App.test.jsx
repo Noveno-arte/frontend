@@ -1,7 +1,7 @@
 import { mount } from 'enzyme';
-import App from './App';
+import App from '../App';
 import React from 'react';
-import RECETAS from './data/recetas.json';
+import RECETAS from '../data/recetas.json';
 
 localStorage.setItem('recetas-ls', JSON.stringify(RECETAS));
 
@@ -16,6 +16,7 @@ describe("<App />", () => {
     const recetasTotales = wrapper.find('.carta-receta');
     //se espera que se cargen las 6 recetas que se encuentran en el archivo json
     expect(recetasTotales.length).toBe(6);
+    expect(wrapper).toMatchSnapshot();
   }); 
 
   it('Creacion de receta', () => {
@@ -51,7 +52,7 @@ describe("<App />", () => {
           Titulo de receta
       </div>
     )).toBe(true);
-
+    expect(wrapper).toMatchSnapshot();
   }); 
 
   it('Edicion de receta', () => {
@@ -118,6 +119,8 @@ describe("<App />", () => {
     
     //se espera encontrar el nuevo paso agregado
     expect(wrapper.find('#prep-'+(indice_prep)).text()).toEqual('agregar 4 huevos');
+
+    expect(wrapper).toMatchSnapshot();
   }); 
 
   it('prueba de eliminacion', () => {
@@ -149,6 +152,8 @@ describe("<App />", () => {
           {RecetaActual.titulo}
       </div>
     )).toBe(false);
+    
+    expect(wrapper).toMatchSnapshot();
   }); 
 
 

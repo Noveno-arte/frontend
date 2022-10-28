@@ -5,11 +5,12 @@ import EditarReceta from './pages/EditarReceta';
 import AgregarReceta from './pages/AgregarReceta';
 import React, { useState } from "react";
 import {UserContext} from "./components/UserContext"
+import RECETAS from './data/recetas.json';
 
 
 function App() {
   //const {token,setToken} = useContext(UserContext); 
-  const [recetas, setRecetas] = useState(JSON.parse(localStorage.getItem('recetas-ls')));
+  const [recetas, setRecetas] = useState(RECETAS);
   const [path, setPath] = useState(0);
   const [indice, setIndice] = useState(0);
 
