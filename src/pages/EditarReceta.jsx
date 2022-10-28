@@ -89,7 +89,7 @@ function EditarReceta() {
                     <img src={imagen} alt=''/> 
                     <div className="edicion">                        
                         <div className="input-wrapper" style={{width:'100%'}}>
-                            <input className="input-text" type="text" placeholder='URL de la imagen' style={{width:'70%'}} onChange={onChangeHandlerUrl} value={url}/>
+                            <input id='input-url' className="input-text" type="text" placeholder='URL de la imagen' style={{width:'70%'}} onChange={onChangeHandlerUrl} value={url}/>
                             <span  id='cargar-url' onClick={handleAddingImagen} >
                                 <AiOutlineCloudDownload style={{cursor:'pointer'}} size={40} />
                             </span>
@@ -147,7 +147,7 @@ function EditarReceta() {
                     <span id='guardar-receta' onClick={handleGuardar}>
                         <Boton titulo='Guardar'/>
                     </span>
-                    <span style={{textDecoration:'none'}} onClick={()=>{setPath(1)}}>
+                    <span id='cancelar-receta' style={{textDecoration:'none'}} onClick={()=>{setPath(1)}}>
                         <Boton titulo='Cancelar'/>
                     </span>
                 </div>
