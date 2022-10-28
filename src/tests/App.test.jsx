@@ -10,7 +10,7 @@ describe("<App />", () => {
 
   beforeEach(() => {
     wrapper = mount(<App />); //App está compuesto de varios otros componentes. mount(...) es para ello, ya que renderiza los componentes hijos también
-    //wrapper = shallow(<App />); //shallow es para probar un componente por si solo.
+    //wrapper = shallow(<App />); //shallow es para probar un componente por si solo, como unidad.
   });
 
   it('Prueba de listado de recetas', () => { 
@@ -160,11 +160,14 @@ describe("<App />", () => {
     wrapper.find('#input-titulo').invoke('onChange')({ target: { value: actualTitulo+' editado' } });
     
     //Se ingresa nueva imagen
+    expect(wrapper.containsMatchingElement(      
+      <img src={actualUrlImagen} alt=''/>
+    )).toBe(true); //se comprueba que la imagen es la actual
     wrapper.find('#input-url').invoke('onChange')({ target: { value: 'https://www.recetasnestle.cl/sites/default/files/2022-04/que-es-la-zanahoria.jpg' } });
     wrapper.find('#cargar-url').simulate('click'); //se carga nueva imagen
     expect(wrapper.containsMatchingElement(      
       <img src="https://www.recetasnestle.cl/sites/default/files/2022-04/que-es-la-zanahoria.jpg" alt=''/>
-    )).toBe(true);
+    )).toBe(true); //nueva imagen
     expect(wrapper.containsMatchingElement(      
       <img src={actualUrlImagen} alt=''/>
     )).toBe(false); //la vieja imagen ya no está
