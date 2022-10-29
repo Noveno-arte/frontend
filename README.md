@@ -24,7 +24,7 @@ Pruebas programadas usando Enzyme (junto a Jest), librería que permite buscar e
     - Ejecutar comando <em>**npm install**</em> en consola, estando en el directorio ST-Recipes
   - ## Cómo usar
     - Para ejecutar demo de la página web: <em>**npm start**</em>
-    - Para ejecutar pruebas: <em>**npm test**</em>. Seguir instrucciones que aparecen en consola para seguir realizar la acción correspondiente (e.g. ><em>**a**</em>: Ejecutar todas las pruebas) 
+    - Para ejecutar pruebas: <em>**npm test**</em>. Seguir instrucciones que aparecen en consola para realizar la acción correspondiente (e.g. ><em>**a**</em>: Ejecutar todas las pruebas) 
 
 # License
   MIT License
