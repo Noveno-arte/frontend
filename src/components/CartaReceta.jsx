@@ -1,30 +1,26 @@
-import React, {useContext } from 'react';
-import {UserContext} from "./UserContext"
+import React from 'react';
 import "./CartaReceta.css";
 import Boton from './Boton'
+import {Link} from 'react-router-dom';
+import defaultImage from '../images/default.jpg';
 
 function CartaReceta({data,index}) {
-
-    const {setPath} = useContext(UserContext); 
-    const {setIndice} = useContext(UserContext); 
-
-    const handleClick =(index)=>{
-        setPath(1);
-        setIndice(index);
+    const replaceImage = (error) => {
+        //replacement of broken Image
+        error.target.src = defaultImage; 
     }
-
     return (
         <div className='receta-wrapper'>
-            <img src={data.imagen} alt='' />
+            <img src={data.imagen} alt='' onError={replaceImage}/>
             <div className="receta-data">
                 <div className="receta-titulo">
                     {data.titulo}
                 </div>
                 <hr/>
                 <div className="accion" >
-                    <span className={'link-to-'+index+'-btn'} onClick={()=>{handleClick(index)}} style={{ textDecoration: 'none' }}>
-                    <Boton titulo="Ver receta"/>
-                    </span>
+                    <Link to={'/receta/'+data.id} className={'link-to-'+index+'-btn'} style={{ textDecoration: 'none' }}>
+                        <Boton titulo="Ver receta"/>
+                    </Link>
                 </div>
             </div>
 

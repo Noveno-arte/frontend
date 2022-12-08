@@ -1,30 +1,31 @@
-import React, { useState, useContext } from 'react';
-import {UserContext} from "../components/UserContext";
+import React,{useState} from 'react';
 import "./EditarReceta.css";
-import { AiOutlineArrowLeft,AiOutlineDelete, AiOutlineCloudDownload } from 'react-icons/ai';
+import { AiOutlineArrowLeft,AiOutlineDelete } from 'react-icons/ai';
 import { IoIosAddCircleOutline} from 'react-icons/io';
+import {Link} from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import Boton from '../components/Boton';
+import axios from 'axios';
+import LoadingArea from '../components/Utils/LoadingArea';
+import noimage from '../images/no-image-icon.png';
 
 //https://www.recetasgratis.net/
 function EditarReceta() {    
-
-    const {recetas,setRecetas} = useContext(UserContext); 
-    const {setPath} = useContext(UserContext); 
-    const {indice} = useContext(UserContext); 
-
-    const RECETA = recetas[indice];
+    const navigate = useNavigate()
+    const { id } = useParams();  
 
     const [error, setError] = useState(false);  
     const [mlerror, setMlerror] = useState(false);    
+    const [saveerror, setSaveerror] = useState(false);  
 
-    const [titulo, setTitulo] = useState(RECETA.titulo);   
-    const [imagen, setImagen] = useState(RECETA.imagen);   
-    const [url, setUrl] = useState(RECETA.imagen);    
+    const [titulo, setTitulo] = useState(null);   
+    const [imagen, setImagen] = useState(null);   
+    const [url, setUrl] = useState(null);    
 
-    const [ingredientes, setIngredientes] = useState(RECETA.ingredientes);
+    const [ingredientes, setIngredientes] = useState(null);
     const [ingrediente, setIngrediente] = useState('');
 
-    const [preparaciones, setPreparaciones] = useState(RECETA.preparacion);
+    const [preparaciones, setPreparaciones] = useState(null);
     const [preparacion, setPreparacion] = useState('');    
 
     const handleDeleteIngredientes = (index) => setIngredientes(ingredientes.filter(item => item !== ingredientes[index]));
@@ -32,12 +33,41 @@ function EditarReceta() {
 
     const handleAddingIngredientes = () => {if (ingrediente.split(" ").join("").length !== 0) setIngredientes([...ingredientes,ingrediente]); setIngrediente('')};
     const handleAddingPreparaciones = () => {if (preparacion.split(" ").join("").length !== 0) setPreparaciones([...preparaciones,preparacion]); setPreparacion('')};
-    const handleAddingImagen = () => url.split(" ").join("").length !== 0 ? setImagen(url):'';
+    //const handleAddingImagen = () => url.split(" ").join("").length !== 0 ? setImagen(url):'';
 
     const onChangeHandlerIngredientes = event => setIngrediente(event.target.value);
     const onChangeHandlerPreparaciones = event => setPreparacion(event.target.value);
-    const onChangeHandlerUrl= event => setUrl(event.target.value);
+    //const onChangeHandlerUrl= event => setUrl(event.target.value);
     const onChangeHandlerTitulo= event => setTitulo(event.target.value);
+
+    const onChangeHandlerUpload = (event) => {
+        event.preventDefault();
+        const value = URL.createObjectURL(event.target.files[0]);
+        setUrl(value)
+        setImagen(event.target.files[0]);
+
+    }
+
+
+    const putReceta = async () => {
+        const _url ='http://localhost:8000/api/recetas/'+id+'/';  
+        
+        let formData = new FormData()
+        formData.append('id',id)
+        formData.append('titulo',titulo)
+        formData.append('ingredientes',ingredientes)
+        formData.append('preparacion',preparaciones)
+        formData.append('imagen',imagen)
+
+        await axios.put(_url,formData)
+        .then(res => {                          
+            navigate('/receta/'+id );    
+        })
+        .catch(err => {
+            console.log(err)
+            setSaveerror(true)  
+        })
+    };
 
     const handleGuardar = () => {
         if (ingredientes.length === 0 || preparaciones.length === 0 || titulo === ''){
@@ -46,29 +76,44 @@ function EditarReceta() {
             setMlerror(true)
         }
         else{
-            const temp = Object.assign([], recetas);
-            temp[indice].titulo = titulo;
-            temp[indice].imagen = imagen;
-            temp[indice].ingredientes = ingredientes;
-            temp[indice].preparacion = preparaciones;
-            setRecetas(temp);
-            setError(false);
-            setMlerror(false)
-            setPath(1);
+            putReceta();
         }
     };
+
+    React.useEffect(() => {
+        const getReceta = async () => {    
+            const url ='http://localhost:8000/api/recetas/'+id+'/'
+            
+            await axios.get(url)
+            .then(res => {               
+                const receta = res.data;
+                setTitulo(receta.titulo) 
+                //setImagen(receta.imagen);   
+                setUrl(receta.imagen);  
+                setIngredientes(receta.ingredientes);   
+                setPreparaciones(receta.preparacion);  
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        };
+        if (id){
+            getReceta()
+        }        
+    },[id]);
 
     return (        
         <div className='main-page'>            
             <div className="return-wrapper">
-                <span style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem',cursor:'pointer'}} onClick={()=>{setPath(1)}} >
+                <Link to={'/receta/'+id} style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem',cursor:'pointer'}} >
                     <AiOutlineArrowLeft size={30}/>                
                     <div className="header-return" >
                         Volver
                     </div>
-                </span>
+                </Link>
             </div>
-            <div className="recetas-container">
+            {ingredientes && preparaciones ?
+            <div className="recetas-container">            
                 <div className="edit-titulo">                                                 
                     <div className="subtitulo">
                         Titulo
@@ -83,16 +128,18 @@ function EditarReceta() {
                 </div>
                 )}
                 <div className="edicion-imagen">                                   
-                    <div className="subtitulo">
+                <div className="subtitulo">
                         Imagen
                     </div>
-                    <img src={imagen} alt=''/> 
+                    {url ?
+                    <img src={url} alt=''/> 
+                    :
+                    <img className='no-image-upload' src={noimage} alt=''/> 
+                    }
+                    
                     <div className="edicion">                        
                         <div className="input-wrapper" style={{width:'100%'}}>
-                            <input id='input-url' className="input-text" type="text" placeholder='URL de la imagen' style={{width:'70%'}} onChange={onChangeHandlerUrl} value={url}/>
-                            <span  id='cargar-url' onClick={handleAddingImagen} >
-                                <AiOutlineCloudDownload style={{cursor:'pointer'}} size={40} />
-                            </span>
+                            <input className="input-imagen" type='file' name='file' accept='image/*' onChange={onChangeHandlerUpload}/>
                         </div>
                     </div>
                 </div>
@@ -147,12 +194,21 @@ function EditarReceta() {
                     <span id='guardar-receta' onClick={handleGuardar}>
                         <Boton titulo='Guardar'/>
                     </span>
-                    <span id='cancelar-receta' style={{textDecoration:'none'}} onClick={()=>{setPath(1)}}>
+                    <Link to={'/receta/'+id} style={{textDecoration:'none'}}>
                         <Boton titulo='Cancelar'/>
-                    </span>
+                    </Link>
+                </div>  
+                {saveerror && (
+                <div className="warning-empty" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                    ¡No se pudo guardar!
                 </div>
-            </div>
+                )}          
+            </div>  
+            : 
+            <LoadingArea/>
+            }          
         </div>
+        
     );
 }
 

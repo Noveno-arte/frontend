@@ -5,7 +5,7 @@ function LoadFiles(props) {
     
     useEffect(() => {
         const data = localStorage.getItem('recetas-ls');
-        if (data === null){
+        if (data === null ){
             localStorage.setItem('recetas-ls', JSON.stringify(RECETAS));
             console.log("loaded")
         }else{            
