@@ -13,12 +13,12 @@ function CartaReceta({data,index}) {
         <div className='receta-wrapper'>
             <img src={data.imagen} alt='' onError={replaceImage}/>
             <div className="receta-data">
-                <div className="receta-titulo">
+                <div id={'receta-carta-titulo-'+index} className="receta-titulo">
                     {data.titulo}
                 </div>
                 <hr/>
                 <div className="accion" >
-                    <Link to={'/receta/'+data.id} className={'link-to-'+index+'-btn'} style={{ textDecoration: 'none' }}>
+                    <Link id={'link-to-'+index+'-btn-id'} to={'/receta/'+data.id} className={'link-to-'+index+'-btn'} style={{ textDecoration: 'none' }}>
                         <Boton titulo="Ver receta"/>
                     </Link>
                 </div>

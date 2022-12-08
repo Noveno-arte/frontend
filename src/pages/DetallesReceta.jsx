@@ -15,6 +15,7 @@ function DetallesReceta() {
     const navigate = useNavigate()
     const { id } = useParams();  
     const [receta,setReceta] = React.useState(null);
+    const [isloaded,setIsloaded] = React.useState(true);
 
     const handleEliminar = async () =>{
         const url ='http://localhost:8000/api/recetas/'+id+'/'
@@ -29,6 +30,7 @@ function DetallesReceta() {
     const replaceImage = (error) => {
         //replacement of broken Image
         error.target.src = defaultImage; 
+        setIsloaded(false)
     }
 
 
@@ -54,9 +56,9 @@ function DetallesReceta() {
         <ScrollToTop />  
         <div className='main-page'>
             <div className="return-wrapper">
-                <Link to='/' style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem', cursor:'pointer'}} >
+                <Link id='return-btn' to='/' style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem', cursor:'pointer'}} >
                     <AiOutlineArrowLeft size={30}/>                
-                    <div className="header-return" >
+                    <div id='return-btn-text' className="header-return" >
                         Volver
                     </div>
                 </Link>
@@ -64,16 +66,16 @@ function DetallesReceta() {
             <div className="recetas-container">   
             {receta ? <>  
                 <div className="receta-header">                 
-                    <div className="titulo">                        
+                    <div id='id-titulo-receta' className="titulo">                        
                         {receta.titulo}
                     </div> 
                     <div className="accion-imagen">
-                        <img src={receta.imagen} alt='' onError={replaceImage}/> 
+                        <img id={isloaded ? 'img-src-loaded':'img-src-default'} src={receta.imagen} alt='' onError={replaceImage}/> 
                         <div className="accion">
-                            <Link to={'/editar/'+receta.id} className='accion-editar-btn' style={{ textDecoration: 'none' ,cursor:'pointer'}}>
+                            <Link id={'accion-editar-btn-id'} to={'/editar/'+receta.id} className='accion-editar-btn' style={{ textDecoration: 'none' ,cursor:'pointer'}}>
                                 <Boton titulo='Editar'/>         
                             </Link>
-                            <div className='accion-eliminar-btn' onClick={handleEliminar} >
+                            <div id={'accion-eliminar-btn-id'} className='accion-eliminar-btn' onClick={handleEliminar} >
                                 <Boton titulo='Eliminar'/>   
                             </div>                  
                         </div>

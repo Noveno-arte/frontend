@@ -19,8 +19,9 @@ function ListaRecetas(props) {
         const url ='http://localhost:8000/api/recetas/'
         
         await axios.get(url)
-        .then(res => {                           
-            setRecetas(res.data)        
+        .then(res => {       
+            const listOfRecipes = res.data                     
+            setRecetas(listOfRecipes.reverse())        
         })
         .catch(err => {
             console.log(err)
@@ -44,7 +45,7 @@ function ListaRecetas(props) {
                         Lista de recetas
                     </div>
                 </div>
-                <Link className="agregar-receta" to='/agregar' style={{textDecoration:'none', color:'black', cursor:'pointer'}} >
+                <Link id='new-recipe-btn' className="agregar-receta" to='/agregar' style={{textDecoration:'none', color:'black', cursor:'pointer'}} >
                     <div className="icono">
                         <IoIosAddCircleOutline size={60} color={'#782701'}/>
                     </div>

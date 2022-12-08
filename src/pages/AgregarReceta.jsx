@@ -46,11 +46,11 @@ function AgregarReceta() {
 
     const postReceta = async () => {
         const _url ='http://localhost:8000/api/receta/nueva';   
-        
+
         let formData = new FormData()
         formData.append('titulo',titulo)
-        formData.append('ingredientes',ingredientes)
-        formData.append('preparacion',preparaciones)
+        formData.append('ingredientes',ingredientes.join('<<separation>>'))
+        formData.append('preparacion',preparaciones.join('<<separation>>'))
         formData.append('imagen',imagen)
 
         await axios.post(_url,formData)
@@ -79,7 +79,7 @@ function AgregarReceta() {
     return (        
         <div className='main-page'>            
             <div className="return-wrapper">
-                <Link to='/' style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem', cursor:'pointer'}}>
+                <Link id='return-btn' to='/' style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem', cursor:'pointer'}}>
                     <AiOutlineArrowLeft size={30}/>                
                     <div className="header-return" >
                         Volver
@@ -96,7 +96,7 @@ function AgregarReceta() {
                     </div>                     
                 </div>                 
                 {mlerror && (
-                <div className="warning-length" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                <div id='warning-length-id' className="warning-length" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
                     ¡El titulo no puede exceder los 80 caracteres!
                 </div>
                 )}
@@ -105,9 +105,9 @@ function AgregarReceta() {
                         Imagen
                     </div>
                     {url ?
-                    <img src={url} alt=''/> 
+                    <img id='recipe-image' src={url} alt=''/> 
                     :
-                    <img className='no-image-upload' src={noimage} alt=''/> 
+                    <img id='recipe-default-image' className='no-image-upload' src={noimage} alt=''/> 
                     }
                     
                     <div className="edicion">                        
@@ -125,7 +125,7 @@ function AgregarReceta() {
                         <div key={i} style={{display:'grid',gridTemplateColumns:'4fr 1fr', alignItems:'center',gap:'10px'}}>
                             <li id={'ing-'+i} style={{margin:'10px 0'}}>{ingrediente}</li>
                             <span id={'eliminar-ingrediente-'+i} onClick={() => handleDeleteIngredientes(i)}  >
-                                <AiOutlineDelete style={{cursor:'pointer'}} size={20}/>
+                                <AiOutlineDelete id={'eliminar-ingrediente-btn-'+i} style={{cursor:'pointer'}} size={20}/>
                             </span>
                         </div>
                     ))}                        
@@ -133,7 +133,7 @@ function AgregarReceta() {
                     <div className="input-wrapper" style={{width:'100%'}}>
                         <input id='input-ingrediente' className="input-text" type="text" placeholder='Añadir ingrediente' style={{width:'70%'}} onChange={onChangeHandlerIngredientes} value={ingrediente}/>
                         <span id='cargar-ingrediente' onClick={handleAddingIngredientes} >
-                            <IoIosAddCircleOutline style={{cursor:'pointer'}} size={40} />
+                            <IoIosAddCircleOutline id='cargar-ingrediente-btn' style={{cursor:'pointer'}} size={40} />
                         </span>
                     </div>
                 </div>  
@@ -146,7 +146,7 @@ function AgregarReceta() {
                         <div key={i} style={{display:'grid',gridTemplateColumns:'4fr 1fr', alignItems:'center',gap:'10px'}}>
                             <li id={'prep-'+i} style={{margin:'10px 0'}}>{preparacion}</li>
                             <span id={'eliminar-preparacion-'+i} onClick={() => handleDeletePreparaciones(i)} >
-                                <AiOutlineDelete style={{cursor:'pointer'}} size={20}/>
+                                <AiOutlineDelete id={'eliminar-preparacion-btn-'+i} style={{cursor:'pointer'}} size={20}/>
                             </span>
                         </div>
                     ))}                        
@@ -154,12 +154,12 @@ function AgregarReceta() {
                     <div className="input-wrapper" style={{width:'100%'}} >
                         <input id='input-preparacion' className="input-text" type="text" placeholder='Añadir paso' style={{width:'70%'}} onChange={onChangeHandlerPreparaciones} value={preparacion}/>
                         <span id='cargar-preparacion' onClick={handleAddingPreparaciones} >
-                            <IoIosAddCircleOutline style={{cursor:'pointer'}} size={40} />
+                            <IoIosAddCircleOutline id='cargar-preparacion-btn' style={{cursor:'pointer'}} size={40} />
                         </span>
                     </div>     
                 </div> 
                 {error && (
-                <div className="warning-empty" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                <div id='warning-empty-id' className="warning-empty" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
                     ¡Existen campos sin rellenar!
                 </div>
                 )}                
@@ -167,12 +167,12 @@ function AgregarReceta() {
                     <span id='guardar-receta' onClick={handleGuardar}>
                         <Boton titulo='Guardar'/>
                     </span>
-                    <Link to='/' style={{textDecoration:'none'}}>
+                    <Link id='cancelar-receta' to='/' style={{textDecoration:'none'}}>
                         <Boton titulo='Cancelar'/>
                     </Link>
                 </div>
                 {saveerror && (
-                <div className="warning-empty" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                <div id='warning-save-id' className="warning-empty" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
                     ¡No se pudo guardar!
                 </div>
                 )}
