@@ -1,0 +1,42 @@
+.empty-message{
+    display:grid;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+}
+.loading-screen{
+    display:grid;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.text-message{
+    color:#782701;
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: 900;
+}
+
+.empty-message > img{
+    width: 150px;
+    display: block;
+    margin: auto;
+}
+.loading-icon{
+    display: grid;
+    justify-content: center;
+    color: #782701;
+}
+.scatter-icon{
+    display: flex;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.miss-message{
+    display:grid;
+    justify-content: center;
+    align-items: center;
+    margin:50px 0;
+}
