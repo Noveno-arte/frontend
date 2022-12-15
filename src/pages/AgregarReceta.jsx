@@ -1,22 +1,22 @@
-import React, { useState, useContext } from 'react';
-import {UserContext} from "../components/UserContext";
+import React,{useState} from 'react';
 import "./EditarReceta.css";
-import { AiOutlineArrowLeft,AiOutlineDelete, AiOutlineCloudDownload } from 'react-icons/ai';
+import { AiOutlineArrowLeft,AiOutlineDelete} from 'react-icons/ai';
 import { IoIosAddCircleOutline} from 'react-icons/io';
+import {Link} from 'react-router-dom';
 import Boton from '../components/Boton';
+import axios from 'axios';
+import noimage from '../images/no-image-icon.png';
 
 //https://www.recetasgratis.net/
 function AgregarReceta() {    
 
-    const {recetas,setRecetas} = useContext(UserContext); 
-    const {setPath} = useContext(UserContext); 
-     
     const [error, setError] = useState(false); 
-    const [mlerror, setMlerror] = useState(false);    
+    const [mlerror, setMlerror] = useState(false);   
+    const [saveerror, setSaveerror] = useState(false);  
 
     const [titulo, setTitulo] = useState('');   
-    const [imagen, setImagen] = useState('');   
-    const [url, setUrl] = useState('');    
+    const [imagen, setImagen] = useState(null);   
+    const [url, setUrl] = useState(null);    
 
     const [ingredientes, setIngredientes] = useState([]);
     const [ingrediente, setIngrediente] = useState('');
@@ -29,12 +29,39 @@ function AgregarReceta() {
 
     const handleAddingIngredientes = () => {if (ingrediente.split(" ").join("").length !== 0) setIngredientes([...ingredientes,ingrediente]); setIngrediente('')};
     const handleAddingPreparaciones = () => {if (preparacion.split(" ").join("").length !== 0) setPreparaciones([...preparaciones,preparacion]); setPreparacion('')};
-    const handleAddingImagen = () => url.split(" ").join("").length !== 0 ? setImagen(url):'';
+    //const handleAddingImagen = () => url.split(" ").join("").length !== 0 ? setImagen(url):'';
 
     const onChangeHandlerIngredientes = event => setIngrediente(event.target.value);
     const onChangeHandlerPreparaciones = event => setPreparacion(event.target.value);
-    const onChangeHandlerUrl= event => setUrl(event.target.value);
+    //const onChangeHandlerUrl= event => setUrl(event.target.value);
     const onChangeHandlerTitulo= event => setTitulo(event.target.value);
+
+    const onChangeHandlerUpload = (event) => {
+        event.preventDefault();
+        const value = URL.createObjectURL(event.target.files[0]);
+        setUrl(value)
+        setImagen(event.target.files[0]);
+
+    }
+
+    const postReceta = async () => {
+        const _url ='http://localhost:8000/api/receta/nueva';   
+
+        let formData = new FormData()
+        formData.append('titulo',titulo)
+        formData.append('ingredientes',ingredientes.join('<<separation>>'))
+        formData.append('preparacion',preparaciones.join('<<separation>>'))
+        formData.append('imagen',imagen)
+
+        await axios.post(_url,formData)
+        .then(res => {                          
+            window.location.href = '/'    
+        })
+        .catch(err => {
+            console.log(err)
+            setSaveerror(true)  
+        })
+    };
 
     const handleGuardar = () => {
 
@@ -43,13 +70,7 @@ function AgregarReceta() {
         }else if (titulo.length > 80 ){
             setMlerror(true);
         }else{
-            const newElement = {titulo:titulo,imagen:imagen,ingredientes:ingredientes,preparacion:preparaciones};
-            const actualRecetas = Object.assign([], recetas);
-            const newArray = [newElement].concat(actualRecetas);
-            setRecetas(newArray);
-            setError(false);
-            setMlerror(false);
-            setPath(0);
+            postReceta()
         }
 
 
@@ -58,12 +79,12 @@ function AgregarReceta() {
     return (        
         <div className='main-page'>            
             <div className="return-wrapper">
-                <span style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem', cursor:'pointer'}} onClick={()=>{setPath(0)}}>
+                <Link id='return-btn' to='/' style={{ textDecoration: 'none', color:'#782701', display:'flex',alignItems:'center',gap:'1rem', cursor:'pointer'}}>
                     <AiOutlineArrowLeft size={30}/>                
                     <div className="header-return" >
                         Volver
                     </div>
-                </span>
+                </Link>
             </div>
             <div className="recetas-container">
                 <div className="edit-titulo">                                                 
@@ -75,7 +96,7 @@ function AgregarReceta() {
                     </div>                     
                 </div>                 
                 {mlerror && (
-                <div className="warning-length" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                <div id='warning-length-id' className="warning-length" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
                     ¡El titulo no puede exceder los 80 caracteres!
                 </div>
                 )}
@@ -83,13 +104,15 @@ function AgregarReceta() {
                     <div className="subtitulo">
                         Imagen
                     </div>
-                    <img src={imagen} alt=''/> 
+                    {url ?
+                    <img id='recipe-image' src={url} alt=''/> 
+                    :
+                    <img id='recipe-default-image' className='no-image-upload' src={noimage} alt=''/> 
+                    }
+                    
                     <div className="edicion">                        
                         <div className="input-wrapper" style={{width:'100%'}}>
-                            <input id='input-url' className="input-text" type="text" placeholder='URL de la imagen' style={{width:'70%'}} onChange={onChangeHandlerUrl} value={url}/>
-                            <span  id='cargar-url' onClick={handleAddingImagen} >
-                                <AiOutlineCloudDownload style={{cursor:'pointer'}} size={40} />
-                            </span>
+                            <input className="input-imagen" type='file' name='file' accept='image/*' onChange={onChangeHandlerUpload}/>
                         </div>
                     </div>
                 </div>
@@ -102,7 +125,7 @@ function AgregarReceta() {
                         <div key={i} style={{display:'grid',gridTemplateColumns:'4fr 1fr', alignItems:'center',gap:'10px'}}>
                             <li id={'ing-'+i} style={{margin:'10px 0'}}>{ingrediente}</li>
                             <span id={'eliminar-ingrediente-'+i} onClick={() => handleDeleteIngredientes(i)}  >
-                                <AiOutlineDelete style={{cursor:'pointer'}} size={20}/>
+                                <AiOutlineDelete id={'eliminar-ingrediente-btn-'+i} style={{cursor:'pointer'}} size={20}/>
                             </span>
                         </div>
                     ))}                        
@@ -110,7 +133,7 @@ function AgregarReceta() {
                     <div className="input-wrapper" style={{width:'100%'}}>
                         <input id='input-ingrediente' className="input-text" type="text" placeholder='Añadir ingrediente' style={{width:'70%'}} onChange={onChangeHandlerIngredientes} value={ingrediente}/>
                         <span id='cargar-ingrediente' onClick={handleAddingIngredientes} >
-                            <IoIosAddCircleOutline style={{cursor:'pointer'}} size={40} />
+                            <IoIosAddCircleOutline id='cargar-ingrediente-btn' style={{cursor:'pointer'}} size={40} />
                         </span>
                     </div>
                 </div>  
@@ -123,7 +146,7 @@ function AgregarReceta() {
                         <div key={i} style={{display:'grid',gridTemplateColumns:'4fr 1fr', alignItems:'center',gap:'10px'}}>
                             <li id={'prep-'+i} style={{margin:'10px 0'}}>{preparacion}</li>
                             <span id={'eliminar-preparacion-'+i} onClick={() => handleDeletePreparaciones(i)} >
-                                <AiOutlineDelete style={{cursor:'pointer'}} size={20}/>
+                                <AiOutlineDelete id={'eliminar-preparacion-btn-'+i} style={{cursor:'pointer'}} size={20}/>
                             </span>
                         </div>
                     ))}                        
@@ -131,23 +154,28 @@ function AgregarReceta() {
                     <div className="input-wrapper" style={{width:'100%'}} >
                         <input id='input-preparacion' className="input-text" type="text" placeholder='Añadir paso' style={{width:'70%'}} onChange={onChangeHandlerPreparaciones} value={preparacion}/>
                         <span id='cargar-preparacion' onClick={handleAddingPreparaciones} >
-                            <IoIosAddCircleOutline style={{cursor:'pointer'}} size={40} />
+                            <IoIosAddCircleOutline id='cargar-preparacion-btn' style={{cursor:'pointer'}} size={40} />
                         </span>
                     </div>     
                 </div> 
                 {error && (
-                <div className="warning-empty" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                <div id='warning-empty-id' className="warning-empty" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
                     ¡Existen campos sin rellenar!
                 </div>
-                )}
+                )}                
                 <div className="opciones">
                     <span id='guardar-receta' onClick={handleGuardar}>
                         <Boton titulo='Guardar'/>
                     </span>
-                    <span style={{textDecoration:'none'}} onClick={()=>{setPath(0)}}>
+                    <Link id='cancelar-receta' to='/' style={{textDecoration:'none'}}>
                         <Boton titulo='Cancelar'/>
-                    </span>
+                    </Link>
                 </div>
+                {saveerror && (
+                <div id='warning-save-id' className="warning-empty" style={{color:'red',display:'flex',justifyContent:'center',margin:'10px 0'}}>
+                    ¡No se pudo guardar!
+                </div>
+                )}
             </div>
         </div>
     );
